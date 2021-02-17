@@ -31,7 +31,7 @@ FROM (
          FROM osm_city_point
          WHERE geometry && bbox
            AND ((zoom_level = 2 AND "rank" = 1)
-             OR (zoom_level BETWEEN 3 AND 7 AND "rank" <= zoom_level + 1)
+             OR (zoom_level BETWEEN 3 AND 7 AND "rank" <= zoom_level + 1) -- city points with null rank are not selected for zooms below 7
              )
          UNION ALL
          SELECT osm_id,
@@ -56,7 +56,7 @@ FROM (
                          row_number() OVER (
                              PARTITION BY LabelGrid(geometry, 128 * pixel_width)
                              ORDER BY "rank" ASC NULLS LAST,
-                                 place ASC NULLS LAST,
+                                 place ASC NULLS LAST, -- place here is type of place, one of 'city', 'town', 'village', 'hamlet', 'suburb', 'quarter', 'neighbourhood', 'isolated_dwelling'
                                  population DESC NULLS LAST,
                                  length(name) ASC
                              )::int AS gridrank
