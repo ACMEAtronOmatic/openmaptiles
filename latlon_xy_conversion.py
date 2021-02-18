@@ -1,3 +1,8 @@
+#!/usr/bin/python
+"""Terminal use:
+
+python3 latlon_xy_conversion.py <zoom int>"""
+import sys
 import math
 
 def convert_latlon(lat_deg, lon_deg, zoom):
@@ -9,8 +14,9 @@ def convert_latlon(lat_deg, lon_deg, zoom):
 
 if __name__ == '__main__':
 
+    # set to Ohio, takes a zoom from user
     lat = 39.685
     lon = -83.705
-    zoom = 5
+    zoom = int(sys.argv[1])
     tile = convert_latlon(lat, lon, zoom)
     print(tile)
