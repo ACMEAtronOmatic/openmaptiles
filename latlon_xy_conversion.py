@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """
 Given a zoom level, prints tile x/y for set lat/lon to terminal
-Use:
+Usage:
 
 python3 latlon_xy_conversion.py <zoom int>
 """

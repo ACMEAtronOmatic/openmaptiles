@@ -41,7 +41,7 @@ FROM (
                 COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
                 tags,
                 place,
-                COALESCE("rank", gridrank + 10), -- 
+                COALESCE("rank", gridrank + 10),
                 normalize_capital_level(capital) AS capital
          FROM (
                   SELECT osm_id,
