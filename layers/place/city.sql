@@ -31,7 +31,7 @@ FROM (
          FROM osm_city_point
          WHERE geometry && bbox
            AND ((zoom_level = 2 AND "rank" = 1)
-              OR (zoom_level BETWEEN 3 AND 7 AND "rank" <= zoom_level + 1) -- city points with null rank are not selected for zooms below 7
+              OR (zoom_level BETWEEN 3 AND 7 AND "rank" <= zoom_level + 1)
              )
          UNION ALL
          SELECT osm_id,
