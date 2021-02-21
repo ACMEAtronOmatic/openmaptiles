@@ -69,9 +69,9 @@ FROM (
                       ))
               ) AS ranked_places
          WHERE (zoom_level BETWEEN 3 AND 8 AND (gridrank <= 15 OR "rank" IS NOT NULL))
-            OR (zoom_level = 9 AND (gridrank <= 30 OR "rank" IS NOT NULL))
-            OR (zoom_level = 10 AND (gridrank <= 45 OR "rank" IS NOT NULL))
-            OR (zoom_level BETWEEN 11 AND 12 AND (gridrank <= 60 OR "rank" IS NOT NULL))
+            OR (zoom_level = 9 AND (gridrank <= 15 OR "rank" IS NOT NULL))
+            OR (zoom_level = 10 AND (gridrank <= 15 OR "rank" IS NOT NULL))
+            OR (zoom_level BETWEEN 11 AND 12 AND (gridrank <= 15 OR "rank" IS NOT NULL))
             OR (zoom_level >= 13)
      ) AS city_all;
 $$ LANGUAGE SQL STABLE
