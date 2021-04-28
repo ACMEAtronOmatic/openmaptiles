@@ -49,7 +49,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_highway_partial_i
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z8 CASCADE;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z8 AS
 (
-SELECT ST_Simplify(geometry, ZRes(10)) AS geometry,
+SELECT ST_Simplify(geometry, ZRes(12)) AS geometry,
        osm_id,
        highway,
        construction,
@@ -71,7 +71,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z8_highway_pa
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z7 CASCADE;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z7 AS
 (
-SELECT ST_Simplify(geometry, ZRes(9)) AS geometry,
+SELECT ST_Simplify(geometry, ZRes(11)) AS geometry,
        osm_id,
        highway,
        construction,
@@ -82,7 +82,7 @@ SELECT ST_Simplify(geometry, ZRes(9)) AS geometry,
 FROM osm_transportation_merge_linestring_gen_z8
 WHERE (highway IN ('motorway', 'trunk', 'primary') OR
        highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary'))
-  AND ST_Length(geometry) > 50
+  AND ST_Length(geometry) > 20
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z7_geometry_idx
     ON osm_transportation_merge_linestring_gen_z7 USING gist (geometry);
@@ -94,7 +94,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z7_highway_pa
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z6 CASCADE;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z6 AS
 (
-SELECT ST_Simplify(geometry, ZRes(8)) AS geometry,
+SELECT ST_Simplify(geometry, ZRes(10)) AS geometry,
        osm_id,
        highway,
        construction,
@@ -104,7 +104,7 @@ SELECT ST_Simplify(geometry, ZRes(8)) AS geometry,
        z_order
 FROM osm_transportation_merge_linestring_gen_z7
 WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND construction IN ('motorway', 'trunk'))
-  AND ST_Length(geometry) > 100
+  AND ST_Length(geometry) > 50
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z6_geometry_idx
     ON osm_transportation_merge_linestring_gen_z6 USING gist (geometry);

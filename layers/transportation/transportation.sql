@@ -236,7 +236,7 @@ FROM (
                 z_order
          FROM osm_highway_linestring_gen_z9
          WHERE zoom_level = 9
-           AND ST_Length(geometry) > ZRes(11)
+           AND ST_Length(geometry) > ZRes(12)
          UNION ALL
 
          -- etldoc: osm_highway_linestring_gen_z10  ->  layer_transportation:z10
@@ -266,7 +266,7 @@ FROM (
                 z_order
          FROM osm_highway_linestring_gen_z10
          WHERE zoom_level = 10
-           AND ST_Length(geometry) > ZRes(11)
+           AND ST_Length(geometry) > ZRes(13)
          UNION ALL
 
          -- etldoc: osm_highway_linestring_gen_z11  ->  layer_transportation:z11
@@ -296,7 +296,6 @@ FROM (
                 z_order
          FROM osm_highway_linestring_gen_z11
          WHERE zoom_level = 11
-           AND ST_Length(geometry) > ZRes(12)
          UNION ALL
 
          -- etldoc: osm_highway_linestring  ->  layer_transportation:z12
