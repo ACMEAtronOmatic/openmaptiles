@@ -4,7 +4,7 @@
 
 # Ensure that errors don't hide inside pipes
 SHELL         = /bin/bash
-.SHELLFLAGS   = -o pipefail -c
+.SHELLFLAGS   = -o pipefail -c 
 
 # Make all .env variables available for make targets
 include .env
@@ -161,25 +161,6 @@ ifneq (,$(wildcard $(AREA_BBOX_FILE)))
   export BBOX
 endif
 
-ifeq ($(strip $(area)),)
-  define assert_area_is_given
-	@echo ""
-	@echo "ERROR: $(AREA_ERROR)"
-	@echo ""
-	@echo "  make $@ area=<area-id>"
-	@echo ""
-	@echo "To download an area, use   make download <area-id>"
-	@echo "To list downloadable areas, use   make list-geofabrik   and/or   make list-bbbike"
-	@exit 1
-  endef
-else
-  ifneq ($(strip $(AREA_INFO)),)
-    define assert_area_is_given
-	@echo "$(AREA_INFO)"
-    endef
-  endif
-endif
-
 #
 #  TARGETS
 #
@@ -230,12 +211,25 @@ help:
 	@echo "  make help                            # help about available commands"
 	@echo "=============================================================================="
 
+define win_fs_error
+	( \
+	echo "" ;\
+	echo "ERROR: Windows native filesystem" ;\
+	echo "" ;\
+	echo "Please avoid running OpenMapTiles in a Windows filesystem." ;\
+	echo "See https://github.com/openmaptiles/openmaptiles/issues/1095#issuecomment-817095465" ;\
+	echo "" ;\
+	exit 1 ;\
+	)
+endef
+
 .PHONY: init-dirs
 init-dirs:
 	@mkdir -p build/sql/parallel
 	@mkdir -p build/openmaptiles.tm2source
 	@mkdir -p data/borders
 	@mkdir -p cache
+	@ ! ($(DOCKER_COMPOSE) 2>/dev/null run $(DC_OPTS) openmaptiles-tools df --output=fstype /tileset| grep -q 9p) || ($(win_fs_error))
 
 build/openmaptiles.tm2source/data.yml: init-dirs
 ifeq (,$(wildcard build/openmaptiles.tm2source/data.yml))
@@ -351,7 +345,7 @@ generate-bbox-file:
 ifeq (,$(wildcard $(AREA_BBOX_FILE)))
 	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm bbox "$(PBF_FILE)" "$(AREA_BBOX_FILE)"
 else
-	@echo "Configuration file $(AREA_BBOX_FILE) already exists, no need to regenerate."
+	@echo "Configuration file $(AREA_BBOX_FILE) already exists, no need to regenerate.  BBOX=$(BBOX)"
 endif
 
 .PHONY: psql
@@ -559,7 +553,7 @@ clean-unnecessary-docker:
 	@echo "Deleting unnecessary container(s)..."
 	@docker ps -a -q --filter "status=exited" | $(XARGS) docker rm
 	@echo "Deleting unnecessary image(s)..."
-	@docker images | grep \<none\> | awk -F" " '{print $$3}' | $(XARGS) docker rmi
+	@docker images | awk -F" " '/<none>/{print $$3}' | $(XARGS) docker rmi
 
 .PHONY: test-perf-null
 test-perf-null: init-dirs
