@@ -103,7 +103,7 @@ DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring CASCADE;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring AS
 (
 SELECT (ST_Dump(geometry)).geom AS geometry,
-       NULL::bigint AS osm_id,
+       osm_id,
        highway,
        construction,
        is_bridge,
@@ -112,6 +112,7 @@ SELECT (ST_Dump(geometry)).geom AS geometry,
        z_order
 FROM (
          SELECT ST_LineMerge(ST_Collect(geometry)) AS geometry,
+                osm_id,
                 highway,
                 construction,
                 is_bridge,
@@ -122,7 +123,7 @@ FROM (
          WHERE (highway IN ('motorway', 'trunk', 'primary') OR
                 highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary'))
            AND ST_IsValid(geometry)
-         GROUP BY highway, construction, is_bridge, is_tunnel, is_ford
+         GROUP BY highway, construction, is_bridge, is_tunnel, is_ford, osm_id
      ) AS highway_union
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_geometry_idx
@@ -171,17 +172,18 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z7_geometry_i
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z6 CASCADE;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z6 AS
 (
-SELECT ST_Simplify(geometry, ZRes(10)) AS geometry,
-       osm_id,
-       highway,
-       construction,
-       is_bridge,
-       is_tunnel,
-       is_ford,
-       z_order
-FROM osm_transportation_merge_linestring_gen_z7
-WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND construction IN ('motorway', 'trunk'))
-  AND ST_Length(geometry) > 50
+SELECT geometry,
+       main_highways.osm_id,
+       main_highways.highway,
+       main_highways.construction,
+       main_highways.is_bridge,
+       main_highways.is_tunnel,
+       main_highways.is_ford,
+       main_highways.z_order
+FROM osm_transportation_merge_linestring_gen_z7 as main_highways
+LEFT JOIN osm_route_member
+ON main_highways.osm_id = osm_route_member.member
+WHERE osm_route_member.network_type IN ('us-state', 'us-interstate')
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z6_geometry_idx
     ON osm_transportation_merge_linestring_gen_z6 USING gist (geometry);
