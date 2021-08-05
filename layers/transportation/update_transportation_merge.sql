@@ -174,8 +174,9 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z7_geometry_i
 -- etldoc: osm_transportation_merge_linestring_gen_z7 -> osm_transportation_merge_linestring_gen_z6
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z6 CASCADE;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z6 AS
-(SELECT geometry,
-        osm_id,
+(
+SELECT geometry,
+       osm_id,
        highway,
        construction,
        is_bridge,
@@ -184,7 +185,7 @@ CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z6 AS
        z_order,
        ref::text
 FROM osm_transportation_merge_linestring_gen_z7
-WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND construction IN ('motorway', 'trunk')) AND ST_Length(geometry) > 500
+WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND construction IN ('motorway', 'trunk')) AND ST_Length(geometry) > 50
 UNION
 SELECT matched_highways.geometry,
        matched_highways.osm_id,
@@ -198,8 +199,11 @@ SELECT matched_highways.geometry,
 FROM osm_transportation_merge_linestring_gen_z7 AS matched_highways
 INNER JOIN osm_transportation_merge_linestring_gen_z7 AS motorways
 ON matched_highways.ref != '' AND matched_highways.ref IS NOT NULL
-AND (motorways.ref::text = ANY(STRING_TO_ARRAY(matched_highways.ref, ';'))) 
-AND (motorways.highway IN ('motorway', 'trunk') OR motorways.highway = 'construction' AND motorways.construction IN ('motorway', 'trunk')) AND ST_Length(motorways.geometry) > 500
+AND (STRING_TO_ARRAY(motorways.ref, ';') && STRING_TO_ARRAY(matched_highways.ref, ';') IS TRUE)
+AND (matched_highways.ref::text LIKE '%US %' OR matched_highways.ref::text LIKE '%I %')
+AND (motorways.highway IN ('motorway', 'trunk') OR motorways.highway = 'construction' AND motorways.construction IN ('motorway', 'trunk'))
+AND ST_Length(motorways.geometry) > 50
+AND ST_Intersects(motorways.geometry, matched_highways.geometry)
 ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z6_geometry_idx
     ON osm_transportation_merge_linestring_gen_z6 USING gist (geometry);
