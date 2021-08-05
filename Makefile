@@ -23,7 +23,7 @@ USE_PRELOADED_IMAGE ?=
 PPORT ?= 8090
 export PPORT
 # Local port to use with tileserver
-TPORT ?= 8083
+TPORT ?= 8080
 export TPORT
 
 # Allow a custom docker-compose project name
