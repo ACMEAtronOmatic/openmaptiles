@@ -20,3 +20,6 @@ cache/*
 # any IDE files
 .idea/
 .vscode/
+*.csv
+venv/
+get_tile*

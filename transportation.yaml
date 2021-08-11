@@ -1,6 +1,7 @@
 tileset:
   layers:
     - layers/transportation/transportation.yaml
+    - layers/transportation_name/transportation_name.yaml
   name: OpenMapTiles
   version: 3.12.1
   id: openmaptiles
