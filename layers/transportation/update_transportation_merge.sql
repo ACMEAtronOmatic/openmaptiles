@@ -175,7 +175,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z7_geometry_i
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z6 CASCADE;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z6 AS
 (
-SELECT ST_Simplify(geometry, ZRes(11)) AS geometry,
+SELECT ST_Simplify(geometry, ZRes(10)) AS geometry,
        osm_id,
        highway,
        construction,
