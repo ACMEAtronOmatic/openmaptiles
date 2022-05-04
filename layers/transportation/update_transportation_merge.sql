@@ -210,8 +210,7 @@ SELECT ST_Simplify(geometry, ZRes(10)) AS geometry,
        is_bridge,
        is_tunnel,
        is_ford,
-       z_order,
-       ref::text
+       z_order
 FROM osm_transportation_merge_linestring_gen_z7
 WHERE (highway IN ('motorway', 'trunk') OR construction IN ('motorway', 'trunk'))
   AND ST_Length(geometry) > 100
@@ -230,8 +229,7 @@ SELECT ST_Simplify(geometry, ZRes(7)) AS geometry,
        is_bridge,
        is_tunnel,
        is_ford,
-       z_order,
-       ref
+       z_order
 FROM osm_transportation_merge_linestring_gen_z6
 WHERE ST_Length(geometry) > 500
      -- Current view: motorway/trunk
@@ -250,8 +248,7 @@ SELECT ST_Simplify(geometry, ZRes(6)) AS geometry,
        is_bridge,
        is_tunnel,
        is_ford,
-       z_order,
-       ref
+       z_order
 FROM osm_transportation_merge_linestring_gen_z5
 WHERE (highway = 'motorway' OR construction = 'motorway')
   AND ST_Length(geometry) > 1000
