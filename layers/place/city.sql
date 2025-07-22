@@ -56,22 +56,22 @@ FROM (
                          row_number() OVER (
                              PARTITION BY LabelGrid(geometry, 128 * pixel_width)
                              ORDER BY "rank" ASC NULLS LAST,
-                                 place ASC NULLS LAST,
+                                 place ASC NULLS LAST, -- place here is type of place, one of 'city', 'town', 'village', 'hamlet', 'suburb', 'quarter', 'neighbourhood', 'isolated_dwelling'
                                  population DESC NULLS LAST,
                                  length(name) ASC
                              )::int AS gridrank
                   FROM osm_city_point
                   WHERE geometry && bbox
-                    AND ((zoom_level = 7 AND place <= 'town'::city_place
+                    AND ((zoom_level BETWEEN 4 AND 7 AND place <= 'town'::city_place -- adding cities and towns for zooms 4-7 to intermediate results so that they can be included in the outer layer query
                       OR (zoom_level BETWEEN 8 AND 10 AND place <= 'village'::city_place)
                       OR (zoom_level BETWEEN 11 AND 13 AND place <= 'suburb'::city_place)
                       OR (zoom_level >= 14)
                       ))
               ) AS ranked_places
-         WHERE (zoom_level BETWEEN 7 AND 8 AND (gridrank <= 4 OR "rank" IS NOT NULL))
-            OR (zoom_level = 9 AND (gridrank <= 8 OR "rank" IS NOT NULL))
-            OR (zoom_level = 10 AND (gridrank <= 12 OR "rank" IS NOT NULL))
-            OR (zoom_level BETWEEN 11 AND 12 AND (gridrank <= 14 OR "rank" IS NOT NULL))
+         WHERE (zoom_level BETWEEN 4 AND 8 AND (gridrank <= 15 OR "rank" IS NOT NULL)) -- changing from 4 to 15 to catch places that are lower down the gridranking for zooms 4 - 12
+            OR (zoom_level = 9 AND (gridrank <= 15 OR "rank" IS NOT NULL))
+            OR (zoom_level = 10 AND (gridrank <= 15 OR "rank" IS NOT NULL))
+            OR (zoom_level BETWEEN 11 AND 12 AND (gridrank <= 15 OR "rank" IS NOT NULL))
             OR (zoom_level >= 13)
      ) AS city_all;
 $$ LANGUAGE SQL STABLE
