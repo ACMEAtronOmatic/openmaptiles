@@ -9,6 +9,7 @@ def_poi_mapping_aerialway: &poi_mapping_aerialway
 # amenity values , see http://taginfo.openstreetmap.org/keys/amenity#values
 def_poi_mapping_amenity: &poi_mapping_amenity
   - arts_centre
+  - atm
   - bank
   - bar
   - bbq
@@ -17,6 +18,7 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - biergarten
   - bus_station
   - cafe
+  - charging_station
   - cinema
   - clinic
   - college
@@ -43,6 +45,7 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - pharmacy
   - place_of_worship
   - police
+  - parcel_locker
   - post_box
   - post_office
   - prison
@@ -116,7 +119,66 @@ def_poi_mapping_leisure: &poi_mapping_leisure
 
 # office values , see http://taginfo.openstreetmap.org/keys/office#values
 def_poi_mapping_office: &poi_mapping_office
+  - accountant
+  - advertising_agency
+  - architect
+  - association
+  - bail_bond_agent
+  - charity
+  - company
+  - construction_company
+  - consulting
+  - cooperative
+  - courier
+  - coworking
   - diplomatic
+  - educational_institution
+  - employment_agency
+  - energy_supplier
+  - engineer
+  - estate_agent
+  - financial
+  - financial_advisor
+  - forestry
+  - foundation
+  - geodesist
+  - government
+  - graphic_design
+  - guide
+  - harbour_master
+  - health_insurance
+  - insurance
+  - interior_design
+  - it
+  - lawyer
+  - logistics
+  - marketing
+  - moving_company
+  - newspaper
+  - ngo
+  - notary
+  - physician
+  - political_party
+  - private_investigator
+  - property_management
+  - publisher
+  - quango
+  - religion
+  - research
+  - security
+  - surveyor
+  - tax_advisor
+  - taxi
+  - telecommunication
+  - therapist
+  - translator
+  - travel_agent
+  - tutoring
+  - union
+  - university
+  - water_utility
+  - web_design
+  - wedding_planner
 
 # railway values , see http://taginfo.openstreetmap.org/keys/railway#values
 def_poi_mapping_railway: &poi_mapping_railway
@@ -191,6 +253,7 @@ def_poi_mapping_shop: &poi_mapping_shop
   - newsagent
   - optician
   - outdoor
+  - paint
   - perfume
   - perfumery
   - pet
@@ -325,6 +388,8 @@ def_poi_fields: &poi_fields
     type: id
   - name: geometry
     type: geometry
+  - name: area
+    type: area
   - name: name
     key: name
     type: string
@@ -352,6 +417,9 @@ def_poi_fields: &poi_fields
   - name: uic_ref
     key: uic_ref
     type: string
+  - name: ref
+    key: ref
+    type: string
   - name: religion
     key: religion
     type: string
@@ -366,6 +434,15 @@ def_poi_fields: &poi_fields
     type: integer
   - name: sport
     key: sport
+    type: string
+  - name: operator
+    key: operator
+    type: string
+  - name: network
+    key: network
+    type: string
+  - name: brand
+    key: brand
     type: string
 
 def_poi_mapping: &poi_mapping
