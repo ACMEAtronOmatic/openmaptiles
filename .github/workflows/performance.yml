@@ -10,7 +10,7 @@ on:
 jobs:
   performance:
     name: Evaluate performance
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     env:
       ## Smaller tests (runs everything in about 30 minutes)
       ## Two test areas:  equatorial-guinea  and  liechtenstein
